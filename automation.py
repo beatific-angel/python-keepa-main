@@ -15,7 +15,7 @@ def truncate_table():
     print('truncating temp table')
     cur = conn.cursor()
     try:
-        cur.execute("""truncate stg.keepa_product_daily_run_tmp""")
+        cur.execute("")
         conn.commit()
         print('table truncated')
     except (Exception, psycopg2.DatabaseError) as error:
@@ -28,9 +28,7 @@ def insert_to_tmp(today):
     print('starting insert to tmp')
     cur = conn.cursor()
     try:
-        cur.execute("""insert into stg.keepa_product_daily_run_tmp (
-                        select * from stg.keepa_product_daily_run
-                        where lastseen like '""" + str(today) + """%')
+        cur.execute("")
                     """)
         conn.commit()
         print('data inserted')
@@ -44,9 +42,7 @@ def update_tmp(yesterday):
     print('starting update to tmp')
     cur = conn.cursor()
     try:
-        cur.execute("""update stg.keepa_product_daily_run_tmp 
-                        set lastseen = '""" + str(yesterday) + """'
-                    """)
+        cur.execute("")
         conn.commit()
         print('data updated')
     except (Exception, psycopg2.DatabaseError) as error:
@@ -59,7 +55,7 @@ def run_function():
     print('starting insert to production tables')
     cur = conn.cursor()
     try:
-        cur.execute("""select potoo_db.keepa_pull()""")
+        cur.execute("")
         conn.commit()
         print('data inserted to production')
     except (Exception, psycopg2.DatabaseError) as error:
@@ -72,7 +68,7 @@ def run_function2():
     print('starting insert to production tables')
     cur = conn.cursor()
     try:
-        cur.execute("""select potoo_db.etl_load()""")
+        cur.execute("")
         conn.commit()
         print('data inserted to production')
     except (Exception, psycopg2.DatabaseError) as error:
@@ -85,7 +81,7 @@ def run_function3():
     print('starting insert to production tables')
     cur = conn.cursor()
     try:
-        cur.execute("""select potoo_db.dashboard_auto_c()""")
+        cur.execute("")
         conn.commit()
         print('data inserted to production')
     except (Exception, psycopg2.DatabaseError) as error:
@@ -97,10 +93,7 @@ def run_function3():
 def select_inventory():
     cur = conn.cursor()
     try:
-        cur.execute("""SELECT country_code, count(*)
-                        FROM potoo_db.sellerinventory_asin_seller
-                        group by country_code 
-                        """)
+        cur.execute("")
         output = cur.fetchall()
         print('data fetched')
     except (Exception, psycopg2.DatabaseError) as error:
@@ -112,7 +105,7 @@ def select_inventory():
 
 
 def sendLog(output1):
-    yag_smtp_connection = yagmail.SMTP(user="autojobs@potoosolutions.com", password="Potoo2021!", host='smtp.gmail.com')
+    yag_smtp_connection = yagmail.SMTP(user="*****", password="*******", host='smtp.gmail.com')
     subject = 'Keepa Log File1'
     # attachment = ['Logs/Log_' + str(s1) + '.log']
     html_str = """ 
@@ -131,7 +124,6 @@ def sendLog(output1):
     Html_file = open('log_Email1.html', "w")
     Html_file.write(str(html_str.encode('UTF-8')).replace('\\n', '').replace('\\t', '')[2:-1])
     Html_file.close()
-    yag_smtp_connection.send('datateam@potoosolutions.com', subject, 'log_Email1.html')  # send from autojobs
     os.remove('log_Email1.html')
 
 
